@@ -80,7 +80,7 @@ function Sidebar(props){
       <span>
         Preço máximo:
       </span>
-      <input type="number" id="maxPrice" onChange={e=>props.setMaxPrice(e.target.value)} placeholder="0"/>
+      <input type="number" id="maxPrice" onChange={e=>props.setMaxPrice(e.target.value!=""?e.target.value:Infinity)} placeholder="0"/>
     </span>)
     :null);
 }
@@ -99,7 +99,7 @@ function Profissionais(props){
     <StyledUl id="profissionaisList" marginLeft={window.innerWidth>650?"20em":0}>
         {props.profissionais.map(
           profissional=>{
-            profissional.Services=profissional.Services.filter(service=> parseInt(service.value)<=props.maxPrice);
+            profissional.Services=profissional.Services.filter(service=> (parseInt(service.value)<=props.maxPrice));
             return profissional.Services.length?<Profissional profissional={profissional}/>:null;
           }
         )}
