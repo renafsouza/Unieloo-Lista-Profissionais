@@ -1,95 +1,127 @@
-import React, { useState} from 'react';
-
+import React, {useState} from 'react';
+import styled from 'styled-components'
 // import logo from './logo.svg';
 import './App.css';
 // import ReactDOM from 'react-dom';
 import axios from 'axios';
-function MaxPrice(props){
-  return <input type="number" id="max_price" placeholder="0"/>;
+
+function Servicos(props){
+  let services =
+    <table>
+      <thead>
+        <tr>
+          <th>Serviço</th>
+          <th>Descrição</th>
+          <th>Duração (min)</th>
+          <th>Preço (R$)</th>
+        </tr>
+      </thead>
+      {
+        props.profissional.Services.map(service =>
+        <tbody>
+          <tr>
+            <td>  {service.name}        </td>
+            <td>  {service.description} </td>
+            <td>  {service.duration}    </td>
+            <td>  {service.value}       </td>
+          </tr>
+        </tbody>
+      )}
+    </table>
+  return(
+    <div>
+      <div className="services">
+      {services}
+      </div>
+    </div>)
+}
+function Profissional(props){
+  return(
+    <li className="item" >
+      <div className="profile">
+        <img className="profilePic" src={props.profissional.User.profileImg} alt="Foto de perfil" />
+        <span>
+          <div className="name">{props.profissional.User.name}</div>
+          <div className="atuacao">{props.profissional.Specialization.name}</div>
+          <div className="desc">{props.profissional.description}</div>
+          <div className="address">
+            <span><a rel="noopener noreferrer" target="_blank" href={"http://"+props.profissional.User.email}> {props.profissional.User.email}</a>, (53) {props.profissional.User.phoneNumber.substring(0,4)+"-"+props.profissional.User.phoneNumber.substring(5,9)}</span>
+            <a title="ver no mapa" rel="noopener noreferrer" target="_blank" href={props.profissional.addressLink}> {props.profissional.addressComplement}, {props.profissional.addressName}, {props.profissional.addressNumber} - {props.profissional.district}</a>
+            <a title="ver no mapa" rel="noopener noreferrer" target="_blank" href={props.profissional.addressLink}>{props.profissional.city}, {props.profissional.state.toUpperCase()}</a>
+            <a title="ver no mapa" rel="noopener noreferrer" target="_blank" href={props.profissional.addressLink}>
+              {props.profissional.cep.substring(0,5)+"-"+props.profissional.cep.substring(5,8)}
+            </a>
+          </div>
+        </span>
+      </div>
+      <Servicos profissional={props.profissional}/>
+    </li>
+  );
+}
+function Sidebar(props){
+  return(
+  window.innerWidth>640?
+    (<span id="sidebar">
+      <div>
+        <a href="https://www.unieloo.com/">
+        <img src="logo.png" alt="logo"/>
+        </a>
+      </div>
+      <span id="sidebar_header">
+        Filtrar resultados
+      </span>
+      <span>
+        Especialização:
+      </span>
+      <select id="especializacao">
+        <option>-</option>
+        {props.specializations.map( specialization=> <option>{specialization}</option> )}
+      </select>
+      <span>
+        Preço máximo:
+      </span>
+      <input type="number" id="maxPrice" onChange={e=>props.setMaxPrice(e.target.value)} placeholder="0"/>
+    </span>)
+    :null);
+}
+const StyledUl = styled.ul`
+  padding: 2em;
+  flex-direction: row;
+  list-style:none;
+  align-content: flex-start;
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  justify-content: space-between;
+  margin-left:${props=>props.marginLeft}`
+function Profissionais(props){
+  return(
+    <StyledUl id="profissionaisList" marginLeft={window.innerWidth>650?"20em":0}>
+        {props.profissionais.map(
+          profissional=>{
+            profissional.Services=profissional.Services.filter(service=> parseInt(service.value)<=props.maxPrice);
+            return <Profissional profissional={profissional}/>
+          }
+        )}
+    </StyledUl>);
 }
 function App(){
-  const [profissionaisData,setProfissionaisData] = useState([]);
+  const [profissionais,setProfissionaisData] = useState([]);
+  let [maxPrice,setMaxPrice] = useState(Infinity);
   axios.get(`https://unieloo-sandbox.herokuapp.com/teste`)
     .then(res => {
-      const profissionaisData = res.data.data;
-      setProfissionaisData(profissionaisData);
+      const profissionais = res.data.data;
+      setProfissionaisData(profissionais);
     });
 
-  if(profissionaisData){
-  var especializacoes = profissionaisData.map(function(profissional){
-    return profissional.Specialization.name;
-  });
-  especializacoes = [...new Set(especializacoes)];
-  var max_price = Infinity;
+  if(profissionais){
+  let specializations = profissionais.map(profissional=>profissional.Specialization.name);
+  specializations = [...new Set(specializations)];
     return (
         <div>
-          <span id="sidebar">
-            <span id="sidebar_header">Filtrar resultados</span>
-            <span>Especialização:</span>
-            <select id="especializacao">
-              <option>-</option>
-              {especializacoes.map(function(specialization){return (<option>{specialization}</option>) }) }
-            </select>
-            <span>Preço máximo:</span>
-            <MaxPrice/>
-          </span>
-          <ul id="professionais_list">
-            {profissionaisData.map(function(profissional){
-                if(document.getElementById("max_price") && document.getElementById("max_price").value){
-                  max_price = parseInt(MaxPrice.value);
-                  console.log(MaxPrice);
-                }
-
-                profissional.Services=profissional.Services.filter(function(service){return parseInt(service.value)<=max_price});
-                if(
-                     profissional.Services.length
-                  && document.getElementById("especializacao")
-                  && (  profissional.Specialization.name == document.getElementById("especializacao").value
-                      ||document.getElementById("especializacao").value == "-"
-                  )
-                )return(
-                  <li className="item" key={profissional.id}>
-                    <div className="profile">
-                      <img className="profilePic" src={profissional.User.profileImg} alt="foto de perfil" />
-                      <span>
-                        <div className="name">{profissional.User.name}</div>
-                        <div className="atuacao">{profissional.Specialization.name}</div>
-                        <div className="desc">{profissional.description}</div>
-                        <div className="address">
-                          <span><a target="_blank" href={"http://"+profissional.User.email}> {profissional.User.email}</a>, (53) {profissional.User.phoneNumber.substring(0,4)+"-"+profissional.User.phoneNumber.substring(5,9)}</span>
-                          <a title="ver no mapa" target="_blank" href={profissional.addressLink}> {profissional.addressComplement}, {profissional.addressName}, {profissional.addressNumber} - {profissional.district}</a>
-                          <a title="ver no mapa" target="_blank" href={profissional.addressLink}>{profissional.city}, {profissional.state.toUpperCase()}</a>
-                          <a title="ver no mapa" target="_blank" href={profissional.addressLink}>
-                            {profissional.cep.substring(0,5)+"-"+profissional.cep.substring(5,8)}
-                          </a>
-                        </div>
-                      </span>
-                    </div>
-                    <div className="services" id={profissional.id}>
-                      <table>
-                          <thead>
-                            <th>Serviço</th><th>Descrição</th>  <th>Duração (min)</th><th>Preço</th>
-                          </thead>
-                        <tbody>
-                          {profissional.Services.map(service =>
-                            <tr>
-                              <td>  {service.name}        </td>
-                              <td>  {service.description} </td>
-                              <td>  {service.duration}    </td>
-                              <td>  {service.value}       </td>
-                            </tr>
-                          )}
-                        </tbody>
-                      </table>
-                    </div>
-                    <div className="expand" onClick={function(){var servicos = document.getElementById(profissional.id);if(servicos.clientHeight>0)servicos.style.height="0";else servicos.style.height="100%";}}>
-                    ...
-                    </div>
-                  </li>
-                ); else return null}
-              )}
-            </ul>
-          </div>
+          <Sidebar specializations={specializations} setMaxPrice={setMaxPrice}/>
+          <Profissionais profissionais={profissionais} maxPrice={maxPrice}/>
+        </div>
     );
   }
     else return null
