@@ -100,7 +100,7 @@ function Profissionais(props){
         {props.profissionais.map(
           profissional=>{
             profissional.Services=profissional.Services.filter(service=> parseInt(service.value)<=props.maxPrice);
-            return <Profissional profissional={profissional}/>
+            return profissional.Services.length?<Profissional profissional={profissional}/>:null;
           }
         )}
     </StyledUl>);
