@@ -4,9 +4,11 @@ import React, { useState} from 'react';
 import './App.css';
 // import ReactDOM from 'react-dom';
 import axios from 'axios';
-
+function MaxPrice(props){
+  return <input type="number" id="max_price" placeholder="0"/>;
+}
 function App(){
-  const [profissionaisData,setProfissionaisData] = useState(0);
+  const [profissionaisData,setProfissionaisData] = useState([]);
   axios.get(`https://unieloo-sandbox.herokuapp.com/teste`)
     .then(res => {
       const profissionaisData = res.data.data;
@@ -29,12 +31,15 @@ function App(){
               {especializacoes.map(function(specialization){return (<option>{specialization}</option>) }) }
             </select>
             <span>Preço máximo:</span>
-            <input type="number" id="max_price" placeholder="0" />
+            <MaxPrice/>
           </span>
           <ul id="professionais_list">
             {profissionaisData.map(function(profissional){
-                if(document.getElementById("max_price") && document.getElementById("max_price").value)
-                  max_price = parseInt(document.getElementById("max_price").value);
+                if(document.getElementById("max_price") && document.getElementById("max_price").value){
+                  max_price = parseInt(MaxPrice.value);
+                  console.log(MaxPrice);
+                }
+
                 profissional.Services=profissional.Services.filter(function(service){return parseInt(service.value)<=max_price});
                 if(
                      profissional.Services.length
