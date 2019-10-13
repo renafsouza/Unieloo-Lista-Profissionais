@@ -17,7 +17,7 @@
   width: 50%;
   flex-shrink: 0;
   flex-grow: 0;
-  box-shadow: 0 0 4px .1px dimgrey;
+  box-shadow: 0 0 5px .1px rgba(0,0,0,.5);
   background: white;
 }
 .desc{
@@ -75,15 +75,16 @@
 .services table tr:not(:first-child)>*:last-child{
   font-weight: 800;
 }
- .profile>span{
-   border-radius: 3px;
-   flex-direction: column;
-   display: flex;
-   width:100%;
-   background-color: white;
-   padding: .5em;
-   margin: 1em 0;
- }
+.profile>span{
+  box-shadow: 0 0 5px .1px rgba(0,0,0,.5);
+  overflow: hidden;
+  flex-direction: column;
+  display: flex;
+  width:100%;
+  background-color: white;
+  padding: .5em;
+  margin: 1em 0;
+}
 .address{
   align-self: flex-end;
   display: flex;
@@ -96,12 +97,13 @@
   padding-right: .5em;
 }
 .item{
+  overflow: visible;
   border-radius: 3px;
   max-width: 340px;
   padding: 1em;
   background-color: #ed6c38;
   border-bottom: 1px solid grey;
-  box-shadow: 0 0 3px .5px dimgrey;
+    box-shadow: 0 0 5px .1px rgba(0,0,0,.5);
   margin: 1em;
   display: table-cell;
 
@@ -110,7 +112,7 @@
 #profissionaisList {
 }
 .profile{
-overflow: hidden;
+  overflow: visible;
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -149,7 +151,7 @@ overflow: hidden;
 #sidebar{
   height: 100%;
   background: white;
-  box-shadow: 0 0 10px 1px dimgrey;
+    box-shadow: 0 0 5px .1px rgba(0,0,0,.8);
   display: flex;
   position: fixed;
   flex-direction: column;

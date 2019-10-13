@@ -1,9 +1,6 @@
 import React, {useState} from 'react';
 import styled from 'styled-components'
-// import logo from './logo.svg';
 import './App.css';
-// import ReactDOM from 'react-dom';
-import axios from 'axios';
 
 function Servicos(props){
   let services =
@@ -80,7 +77,7 @@ function Sidebar(props){
       <span>
         Preço máximo:
       </span>
-      <input type="number" id="maxPrice" onChange={e=>props.setMaxPrice(e.target.value!=""?e.target.value:Infinity)} placeholder="0"/>
+      <input type="number" id="maxPrice" onChange={e=>props.setMaxPrice(e.target.value!==""?e.target.value:Infinity)} placeholder="0"/>
     </span>)
     :null);
 }
@@ -105,24 +102,20 @@ function Profissionais(props){
         )}
     </StyledUl>);
 }
-function App(){
-  const [profissionais,setProfissionaisData] = useState([]);
+function App(props){
+  // const [profissionais,setProfissionaisData] = useState([]);
   let [maxPrice,setMaxPrice] = useState(Infinity);
-  axios.get(`https://unieloo-sandbox.herokuapp.com/teste`)
-    .then(res => {
-      const profissionais = res.data.data;
-      setProfissionaisData(profissionais);
-    });
+  let profissionais = props.profissionais;
 
   if(profissionais){
-  let specializations = profissionais.map(profissional=>profissional.Specialization.name);
-  specializations = [...new Set(specializations)];
-    return (
-        <div>
-          <Sidebar specializations={specializations} setMaxPrice={setMaxPrice}/>
-          <Profissionais profissionais={profissionais} maxPrice={maxPrice}/>
-        </div>
-    );
+    let specializations = profissionais.map(profissional=>profissional.Specialization.name);
+    specializations = [...new Set(specializations)];
+      return (
+          <div>
+            <Sidebar specializations={specializations} setMaxPrice={setMaxPrice}/>
+            <Profissionais profissionais={profissionais} maxPrice={maxPrice}/>
+          </div>
+      );
   }
     else return null
 }
