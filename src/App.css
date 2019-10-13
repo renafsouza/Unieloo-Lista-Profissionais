@@ -14,6 +14,7 @@
   height: 40vmin;
 }
 .profilePic {
+  align-self: center;
   width: 50%;
   flex-shrink: 0;
   flex-grow: 0;
@@ -80,10 +81,10 @@
   overflow: hidden;
   flex-direction: column;
   display: flex;
-  width:100%;
   background-color: white;
   padding: .5em;
-  margin: 1em 0;
+  /* width: 100%; */
+  margin: 1em 0 1em 0;
 }
 .address{
   align-self: flex-end;
@@ -97,15 +98,6 @@
   padding-right: .5em;
 }
 .item{
-  overflow: visible;
-  border-radius: 3px;
-  max-width: 340px;
-  padding: 1em;
-  background-color: #ed6c38;
-  border-bottom: 1px solid grey;
-    box-shadow: 0 0 5px .1px rgba(0,0,0,.5);
-  margin: 1em;
-  display: table-cell;
 
 
 }
@@ -116,7 +108,7 @@
   display: flex;
   align-items: center;
   flex-direction: column;
-
+  align-items:stretch;
 }
 .name, .atuacao, .desc{
   margin:.3em 1em 1em 1em;
@@ -131,7 +123,6 @@
 .address, .address a{
   font-size: 9pt;
   color:  dimgrey;
-  width: 500px;
 }
 .expand{
   user-select: none;

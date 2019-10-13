@@ -14,7 +14,7 @@ function Servicos(props){
         </tr>
       </thead>
       {
-        props.profissional.Services.map(service =>
+        props.filteredServices.map(service =>
         <tbody>
           <tr>
             <td>  {service.name}        </td>
@@ -32,9 +32,20 @@ function Servicos(props){
       </div>
     </div>)
 }
+const Item = styled.li`
+  overflow: visible;
+  border-radius: 3px;
+  max-width: 340px;
+  padding: 1em;
+  background-color: #ed6c38;
+  border-bottom: 1px solid grey;
+  box-shadow: 0 0 5px .1px rgba(0,0,0,.5);
+  margin: 1em;
+  display: table-cell;
+  width: 100%;`;
 function Profissional(props){
   return(
-    <li className="item" >
+    <Item className="item" >
       <div className="profile">
         <img className="profilePic" src={props.profissional.User.profileImg} alt="Foto de perfil" />
         <span>
@@ -51,8 +62,8 @@ function Profissional(props){
           </div>
         </span>
       </div>
-      <Servicos profissional={props.profissional}/>
-    </li>
+      <Servicos filteredServices={props.filteredServices}/>
+    </Item>
   );
 }
 function Sidebar(props){
@@ -70,7 +81,7 @@ function Sidebar(props){
       <span>
         Especialização:
       </span>
-      <select id="especializacao">
+      <select id="especializacao" onChange={e=>{props.setSpecialization(e.target.value)}}>
         <option>-</option>
         {props.specializations.map( specialization=> <option>{specialization}</option> )}
       </select>
@@ -96,15 +107,16 @@ function Profissionais(props){
     <StyledUl id="profissionaisList" marginLeft={window.innerWidth>650?"20em":0}>
         {props.profissionais.map(
           profissional=>{
-            profissional.Services=profissional.Services.filter(service=> (parseInt(service.value)<=props.maxPrice));
-            return profissional.Services.length?<Profissional profissional={profissional}/>:null;
+            let filteredServices=profissional.Services.filter(service=> (parseInt(service.value)<=props.maxPrice));
+            console.log(props.maxPrice);
+            return filteredServices.length && (profissional.Specialization.name == props.specialization || props.specialization == "-")?<Profissional profissional={profissional} filteredServices={filteredServices}/>:null;
           }
         )}
     </StyledUl>);
 }
 function App(props){
-  // const [profissionais,setProfissionaisData] = useState([]);
   let [maxPrice,setMaxPrice] = useState(Infinity);
+  let [specialization,setSpecialization] = useState("-");
   let profissionais = props.profissionais;
 
   if(profissionais){
@@ -112,8 +124,8 @@ function App(props){
     specializations = [...new Set(specializations)];
       return (
           <div>
-            <Sidebar specializations={specializations} setMaxPrice={setMaxPrice}/>
-            <Profissionais profissionais={profissionais} maxPrice={maxPrice}/>
+            <Sidebar specializations={specializations} setSpecialization={setSpecialization} setMaxPrice={setMaxPrice}/>
+            <Profissionais profissionais={profissionais} specialization={specialization} maxPrice={maxPrice}/>
           </div>
       );
   }
