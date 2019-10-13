@@ -3,6 +3,7 @@ Lista de profissionais feita como desafio de seleção da empresa Unieloo.
 
 ## Coisas que aprendi
 - Utilizar react
+- Utilizar styled-components
 - Fazer um call ajax com react
 - Fazer um website simples com react
 
